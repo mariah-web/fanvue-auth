@@ -45,13 +45,16 @@ def callback():
         return "Invalid state", 400
 
     data = {
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": REDIRECT_URI,
-        "code_verifier": session.get("verifier")
-    }
+    "grant_type": "authorization_code",
+    "code": code,
+    "redirect_uri": REDIRECT_URI,
+    "code_verifier": session.get("verifier")
+}
 
-    res = requests.post(TOKEN_URL, data=data)
-    return jsonify(res.json())
+res = requests.post(
+    TOKEN_URL,
+    data=data,
+    auth=(CLIENT_ID, CLIENT_SECRET),  # sends client_secret_basic
+    headers={"Content-Type": "application/x-www-form-urlencoded"},
+    timeout=30,
+)
